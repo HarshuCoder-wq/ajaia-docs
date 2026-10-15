@@ -1,0 +1,23 @@
+# One-click Render Blueprint: free web service + free Postgres.
+# Render dashboard -> New -> Blueprint -> pick this repo.
+services:
+  - type: web
+    name: ajaia-docs
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --workers 2 --preload --bind 0.0.0.0:$PORT
+    healthCheckPath: /login
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ajaia-docs-db
+          property: connectionString
+
+databases:
+  - name: ajaia-docs-db
+    plan: free

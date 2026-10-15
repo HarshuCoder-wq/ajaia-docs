@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="error-page card">
+  <h1>Something's not right</h1>
+  <p>{{ message }}</p>
+  <a class="btn btn-primary" href="{{ url_for('documents.dashboard') }}">Back to documents</a>
+</section>
+{% endblock %}

@@ -1,0 +1,7 @@
+{
+  "name": "ajaia-docs-frontend-smoke",
+  "private": true,
+  "description": "Headless check of the real editor JS (Quill 2 + editor.js) against a running server",
+  "scripts": { "smoke": "node editor_smoke.js" },
+  "dependencies": { "jsdom": "^24.0.0", "quill": "2.0.3" }
+}

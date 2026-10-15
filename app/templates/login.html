@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sign in · Ajaia Docs{% endblock %}
+{% block content %}
+<section class="login">
+  <div class="card login-card">
+    <h1>Sign in</h1>
+    <p class="muted">Lightweight documents your team can write and share.</p>
+    <form method="post" class="stack">
+      <label>Email <input type="email" name="email" required autofocus value="alice@ajaia.test"></label>
+      <label>Password <input type="password" name="password" required value="{{ demo_password }}"></label>
+      <button class="btn btn-primary">Sign in</button>
+    </form>
+  </div>
+  <div class="card demo-card">
+    <h2>Demo accounts</h2>
+    <p class="muted">Password for all: <code>{{ demo_password }}</code>. Sign in as one user, share a document, then sign in as another to see it under “Shared with me”.</p>
+    <ul class="demo-list">
+      {% for email, name in demo_users %}
+      <li><button type="button" class="link" data-email="{{ email }}">{{ email }}</button> <span class="muted">— {{ name }}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  document.querySelectorAll('[data-email]').forEach(b => b.addEventListener('click', () => {
+    document.querySelector('input[name=email]').value = b.dataset.email;
+  }));
+</script>
+{% endblock %}

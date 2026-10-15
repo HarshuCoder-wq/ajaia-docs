@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="dash">
+  <div class="dash-actions">
+    <form method="post" action="{{ url_for('documents.create') }}">
+      <button class="btn btn-primary">+ New document</button>
+    </form>
+    <form method="post" action="{{ url_for('documents.import_document') }}" enctype="multipart/form-data" class="import-form">
+      <label class="btn btn-secondary file-btn">
+        Import file
+        <input type="file" name="file" accept=".txt,.md,.markdown,.docx" required onchange="this.form.submit()">
+      </label>
+      <span class="muted small">Supported: {{ supported }}. Creates a new editable document.</span>
+    </form>
+  </div>
+
+  <h2 class="section-title">My documents <span class="count">{{ owned|length }}</span></h2>
+  {% if owned %}
+  <ul class="doc-list">
+    {% for d in owned %}
+    <li class="doc-row">
+      <a href="{{ url_for('documents.editor', doc_id=d.id) }}" class="doc-link">
+        <span class="doc-icon">▤</span>
+        <span class="doc-title">{{ d.title }}</span>
+      </a>
+      <span class="badge badge-owner">Owner</span>
+      {% if d.shares %}<span class="muted small">Shared with {{ d.shares|length }}</span>{% endif %}
+      <span class="muted small doc-date" data-ts="{{ d.updated_at.isoformat() }}"></span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="empty">No documents yet. Create one or import a file to get started.</p>
+  {% endif %}
+
+  <h2 class="section-title">Shared with me <span class="count">{{ shared|length }}</span></h2>
+  {% if shared %}
+  <ul class="doc-list">
+    {% for d, role in shared %}
+    <li class="doc-row">
+      <a href="{{ url_for('documents.editor', doc_id=d.id) }}" class="doc-link">
+        <span class="doc-icon shared">▤</span>
+        <span class="doc-title">{{ d.title }}</span>
+      </a>
+      <span class="badge badge-{{ role }}">{{ role|capitalize }}</span>
+      <span class="muted small">from {{ d.owner.name }}</span>
+      <span class="muted small doc-date" data-ts="{{ d.updated_at.isoformat() }}"></span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="empty">Nothing shared with you yet.</p>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  document.querySelectorAll('.doc-date').forEach(el => {
+    const d = new Date(el.dataset.ts.endsWith('Z') || el.dataset.ts.includes('+') ? el.dataset.ts : el.dataset.ts + 'Z');
+    el.textContent = 'Edited ' + d.toLocaleString(undefined, {dateStyle: 'medium', timeStyle: 'short'});
+  });
+</script>
+{% endblock %}
