@@ -8,8 +8,10 @@ from .models import db, seed_users
 def _database_url() -> str:
     url = os.environ.get("DATABASE_URL", "sqlite:///ajaia_docs.db")
     # Render/Heroku hand out postgres:// which SQLAlchemy 2 no longer accepts.
-    if url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql://", 1)
+    for prefix in ("postgres://", "postgresql://"):
+        if url.startswith(prefix):
+            url = "postgresql+psycopg2://" + url[len(prefix):]
+            break
     return url
 
 
